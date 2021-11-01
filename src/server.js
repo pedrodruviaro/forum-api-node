@@ -17,8 +17,12 @@ const User = require("./models/User");
 const Post = require("./models/Post");
 const Answer = require("./models/Answer");
 
-User.sync({ force: true });
-Post.sync({ force: true });
-Answer.sync({ force: true });
+Post.belongsTo(User);
+Post.hasMany(Answer);
+Answer.belongsTo(Post);
+
+// User.sync({ force: true });
+// Post.sync({ force: true });
+// Answer.sync({ force: true });
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
