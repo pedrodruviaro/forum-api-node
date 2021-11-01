@@ -25,4 +25,6 @@ Answer.belongsTo(Post);
 // Post.sync({ force: true });
 // Answer.sync({ force: true });
 
+server.use("/api/auth", require("./controllers/user"));
+
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
