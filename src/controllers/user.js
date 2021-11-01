@@ -52,4 +52,28 @@ router.post("/register", async (req, res) => {
     }
 });
 
+router.post("/login", async (req, res) => {
+    // validating input
+    const { error } = loginValidation(req.body);
+    if (error) return res.status(400).json(error.details[0].message);
+
+    // checking if user exists
+    const user = await User.findOne({
+        where: { email: req.body.email },
+    });
+    if (!user) return res.status(400).json({ error: "User not found " });
+
+    // verifying password
+    const passwordIsValid = await bcrypt.compare(
+        req.body.password,
+        user.password
+    );
+    if (!passwordIsValid)
+        return res.status(400).json({ error: "Incorrect password " });
+
+    // sendind token
+    const token = jwt.sign({ user_id: user.id }, process.env.TOKEN_SECRET);
+    const { password, ...rest } = user.dataValues;
+    return res.status(200).json({ token, ...rest });
+});
 module.exports = router;
